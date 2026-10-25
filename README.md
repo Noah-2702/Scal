@@ -1,4 +1,4 @@
-### Scal
+## Scal
 Scal is a friendly scam alert app that checks for scam texts, messages, and emails through a friendly chameleon pal named Scal. If you think a message is a scam or aren't sure about something, ask Scal! Scal acts as your personal scam detector and can become your friend or families with the family circle feature! As of right now, it is in its prototype stage, so Scal is only able to look at what messages you give it, but hopefully it'll be able to look at messages by itself in later updates.
 
 ### How to Use Scal
