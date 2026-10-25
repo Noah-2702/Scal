@@ -21,3 +21,18 @@ As for the treats, they are there to act as a placeholder for the future develop
 ### Family
 In the "My Family" tab, users are able to create their own circles or join them through a 6-digit code that each family circle has and gets. From there, users within that same circle can notify each other whether they have found a scam. This will be a pretty big feature, especially once the app is able to look through emails and messages by itself for you.
 
+## AI Assistance Disclosure
+
+I used Claude (Anthropic's AI assistant) as a coding and design assistant
+throughout this project. It helped with: the Flask backend structure, the
+Gemini integration code, the HTML/CSS/JavaScript interface, the Scal logo (SVG),
+the starting set of scanner rules and test messages, and debugging.
+
+My own work: I chose the problem and the senior-focused design, designed the
+hybrid rules-plus-AI approach and the family circle feature, wrote and tuned
+the scanner rules, tested the app with 30 messages, watched family
+members use it and changed the interface based on what I saw, and debugged
+problems such as a retired model and hidden errors.
+
+Scal also uses Google's Gemini model at runtime to analyze messages. I reviewed
+and tested the AI-generated code, where it works with 3 main python files as its backend, and an html file as the frontend.
