@@ -4,9 +4,7 @@ Scal is a friendly scam alert app that checks for scam texts, messages, and emai
 ### How to Use Scal
 Simply download/copy the repository, create your own .env file with your choice of AI model API Key, and edit out whatever model you want in analyzer.py to run the app! For this version, I am using Gemini's 3.8 Flash, but you are free to switch out for any model you want. Just remember to change the API key in the .env file to match it with the model you are using.
 
-##Features
-
-#Check
+###Check
 In the "check" tab, users are able to paste into text bar whatever message, text, or email they want to check. From there 2 types of checks will occur: quick-scan and thorough-scan
 Quick-Scan:
 - Uses python logic and rules
@@ -20,6 +18,6 @@ From there, users are able to notify their family through the family circle feat
 
 As for the treats, they are there to act as a placeholder for the future development where the treats act like reinforcement learning, where for every time that Scal identifies a correct scam, the user is able to give it a treat to reward it, and as more treats build up, Scal learns more and more to identify sneakier scams and do it without necessary approval of the user, if of course, the user permits it.
 
-#Family
+###Family
 In the "My Family" tab, users are able to create their own circles or join them through a 6-digit code that each family circle has and gets. From there, users within that same circle can notify each other whether they have found a scam. This will be a pretty big feature, especially once the app is able to look through emails and messages by itself for you.
 
