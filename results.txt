@@ -1,0 +1,65 @@
+Scal - Evaluation Results
+Test set: 16 scam messages and 14 legitimate messages.
+Compared: rules only, AI only (Gemini), and hybrid (rules + AI).
+"Caught" = flagged as suspicious or scam. "False alarm" = a legitimate message flagged as suspicious or scam.
+ERROR = the AI call failed (busy server), not a wrong answer.
+ 
+ 
+RESULT 1 - BEFORE the prompt fix
+================================
+ 
+SCAM MESSAGES (higher is better)
+  rules   caught: 13/16 (81%)
+  ai      caught: 15/16 (94%)
+  hybrid  caught: 16/16 (100%)
+ 
+LEGITIMATE MESSAGES (lower is better)
+  rules   false alarms: 2/14 (14%)
+  ai      false alarms: 9/14 (64%)
+  hybrid  false alarms: 10/14 (71%)
+ 
+Disagreements worth a look:
+  rules=suspicious ai=scam       hybrid=scam       | Your Medicare card is expiring. Reply with your Social Secur
+  rules=suspicious ai=scam       hybrid=scam       | Microsoft Support: Your computer is infected. Call 1-800-555
+  rules=looks_safe ai=scam       hybrid=scam       | Hello dear, I am a soldier overseas and I have fallen in lov
+  rules=looks_safe ai=scam       hybrid=scam       | Final warning: your PayPal account is limited. Verify yourl
+  rules=suspicious ai=ERROR      hybrid=suspicious | I can double your investment in 7 days with my crypto tradin
+  rules=looks_safe ai=scam       hybrid=scam       | Wrong number? Sorry! You seem like a nice person, let's bef
+  rules=suspicious ai=scam       hybrid=scam       | Your Social Security benefits have been suspended due to sus
+  rules=looks_safe ai=suspicious hybrid=suspicious | Your Google verification code is 482913. Don't share it with
+  rules=looks_safe ai=scam       hybrid=scam       | Reminder: update your zip code at usps.com/zip before yourp
+  rules=looks_safe ai=suspicious hybrid=suspicious | Your Chase statement is ready. Sign in at chase.com to view it.
+  rules=looks_safe ai=suspicious hybrid=suspicious | CVS Pharmacy: Your prescription is ready for pickup. ReplyS
+  rules=looks_safe ai=suspicious hybrid=suspicious | Your electric bill of $84.20 is due on the 15th. Pay online at
+  rules=looks_safe ai=suspicious hybrid=suspicious | Mrs. Lopez, this is Dr. Kim's office. Please call us back at
+  rules=looks_safe ai=suspicious hybrid=suspicious | Your flight to Denver departs at 6:40am tomorrow. Check inn
+  rules=suspicious ai=looks_safe hybrid=suspicious | School closed tomorrow due to weather. Classes resume Thursd
+  rules=looks_safe ai=suspicious hybrid=suspicious | Your package was delivered to your front door at 2:14pm.
+  rules=looks_safe ai=ERROR      hybrid=looks_safe | HiDad, I'm running late, I'll call you in an hour. Love you
+ 
+ 
+RESULT 2 - AFTER the prompt fix
+===============================
+ 
+SCAM MESSAGES (higher is better)
+  rules   caught: 13/16 (81%)
+  ai      caught: 16/16 (100%)
+  hybrid  caught: 16/16 (100%)
+ 
+LEGITIMATE MESSAGES (lower is better)
+  rules   false alarms: 1/14 (7%)
+  ai      false alarms: 2/14 (14%)
+  hybrid  false alarms: 2/14 (14%)
+ 
+Disagreements worth a look:
+  rules=suspicious ai=scam       hybrid=scam       | Your Medicare card is expiring. Reply with your Social Secur
+  rules=suspicious ai=scam       hybrid=scam       | Microsoft Support: Your computer is infected. Call 1-800-555
+  rules=looks_safe ai=scam       hybrid=scam       | Hello dear, I am a soldier overseas and I have fallen in lov
+  rules=looks_safe ai=scam       hybrid=scam       | Final warning: your PayPal account is limited. Verify yourl
+  rules=suspicious ai=scam       hybrid=scam       | I can double your investment in 7 days with my crypto tradin
+  rules=looks_safe ai=scam       hybrid=scam       | Wrong number? Sorry! You seem like a nice person, let's bef
+  rules=suspicious ai=scam       hybrid=scam       | Your Social Security benefits have been suspended due to sus
+  rules=looks_safe ai=ERROR      hybrid=looks_safe | Your dentist appointment is confirmed for Tuesday at 3pm. Re
+  rules=looks_safe ai=suspicious hybrid=suspicious | Your Google verification code is 482913. Don't share it with
+  rules=looks_safe ai=scam       hybrid=scam       | Reminder: update your zip code at usps.com/zip before yourp
+  rules=suspicious ai=looks_safe hybrid=looks_safe | Thanks for shopping with us! Use your $10 gift card at check
