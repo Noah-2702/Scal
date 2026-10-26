@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scal – Your Scam Alert Pal</title>
+<link rel="icon" href="/static/scal-logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#2f9e5b;--green-dark:#1f6f40;--ink:#1c2b22;--muted:#4b5f53}
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;font-family:"Nunito",system-ui,sans-serif;font-size:20px;line-height:1.5;color:var(--ink);
+       background:linear-gradient(180deg,#dff3e6 0%,#f7fbf8 240px,#f7fbf8 100%) no-repeat #f7fbf8}
+  .wrap{max-width:640px;margin:0 auto;padding:16px 16px 130px}
+  header{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+  .logo{width:68px;height:68px;flex:none}
+  header h1{margin:0;font-size:36px;line-height:1}
+  .tag{font-size:16px;color:var(--muted)}
+  .chip{margin-left:auto;background:#fff;border-radius:999px;padding:8px 14px;font-size:16px;font-weight:800;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);white-space:nowrap}
+  .card{background:#fff;border-radius:24px;padding:20px;margin:16px 0;box-shadow:0 6px 20px rgba(31,111,64,.10)}
+  h3{font-size:24px;margin:0 0 8px}
+  textarea,input{width:100%;padding:14px 16px;font-size:20px;font-family:inherit;margin:8px 0;
+                 border:2px solid #b7d3c1;border-radius:16px;background:#fbfefc}
+  textarea:focus,input:focus{outline:3px solid #9bd9b4;border-color:var(--green)}
+  button{width:100%;min-height:56px;padding:12px 20px;font-size:20px;font-weight:800;font-family:inherit;
+         border:0;border-radius:999px;background:var(--green);color:#fff;cursor:pointer;margin-top:8px}
+  button:hover{background:var(--green-dark)}
+  button.alt{background:#e3efe7;color:var(--green-dark)}
+  button.alt:hover{background:#d3e6da}
+  button:disabled{opacity:.7;cursor:default}
+  .examples{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 2px}
+  .examples button{width:auto;min-height:44px;font-size:16px;padding:8px 14px;margin:0;background:#e3efe7;color:var(--green-dark)}
+  .banner{display:flex;align-items:center;gap:10px;border-radius:16px;padding:12px 16px;font-weight:800;font-size:22px;margin-bottom:12px}
+  .scam .banner{background:#fde8e8;color:#9b1c1c}
+  .suspicious .banner{background:#fff1d6;color:#8a4b08}
+  .looks_safe .banner{background:#e1f5e8;color:#16643a}
+  .scalsays{display:flex;gap:10px;align-items:center;font-weight:800;margin-bottom:6px}
+  .scalsays img{width:44px;height:44px}
+  .small{font-size:16px;color:var(--muted)}
+  .center{text-align:center}
+  .wiggle{animation:wiggle 1s ease-in-out infinite;width:76px;height:76px}
+  @keyframes wiggle{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  @media (prefers-reduced-motion:reduce){.wiggle{animation:none}}
+  .nav{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:calc(100% - 32px);max-width:560px;
+       display:flex;gap:6px;background:#fff;border-radius:999px;padding:6px;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+  .nav button{flex:1;width:auto;margin:0;min-height:60px;background:transparent;color:var(--green-dark);font-size:19px}
+  .nav button.active{background:var(--green);color:#fff}
+  ul{margin:6px 0 10px;padding-left:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+ 
+<header>
+  <img class="logo" src="/static/scal-logo.svg" alt="Scal the chameleon">
+  <div>
+    <h1>Scal</h1>
+    <div class="tag">Your scam alert pal</div>
+  </div>
+  <div class="chip" id="treats">🪰 0 treats</div>
+</header>
+<p class="small">Messages you check are sent to an AI service. Please don't paste real personal information.</p>
+ 
+<section id="tab-check">
+  <div class="card">
+    <h3>What did you receive?</h3>
+    <textarea id="msg" rows="5" placeholder="Paste a text, email, or message here..."></textarea>
+    <button id="checkBtn">Ask Scal</button>
+    <div class="small" style="margin-top:12px">No message handy? Try an example:</div>
+    <div class="examples" id="examples"></div>
+  </div>
+  <div id="result"></div>
+</section>
+ 
+<section id="tab-family" hidden>
+  <div class="card" id="circle"></div>
+  <div class="card"><h3>Family alerts</h3><div id="feed" class="small">Join a circle to see alerts.</div></div>
+</section>
+ 
+</div>
+ 
+<div class="nav">
+  <button id="navCheck" class="active">🔍 Check</button>
+  <button id="navFamily">👨‍👩‍👧 My family</button>
+</div>
+ 
+<script>
+const $ = id => document.getElementById(id);
+let last = null;
+ 
+const EXAMPLES = {
+  "📦 Package": "USPS: Your package is on hold due to an unpaid $1.99 fee. Pay now at usps-redelivery-help.com or it will be returned.",
+  "👵 Grandkid": "Hi Grandma, it's me. I'm in trouble and need $800 in gift cards right now. Please don't tell Mom.",
+  "🏦 Bank": "ALERT: Unusual activity on your bank account. Verify your identity now at secure-bankverify.net or your account will be frozen.",
+  "🦷 Dentist": "Your dentist appointment is confirmed for Tuesday at 3pm. Reply C to confirm.",
+  "Club Announcement": "Dear members, we are excited to announce our annual gala on December 10th. Tickets are available now. Reply YES to reserve your spot.",
+};
+ 
+const MOOD = {
+  scam:       {icon: "🚨", label: "Likely a scam. Do not reply.",          scal: "Yikes! I smell a scam."},
+  suspicious: {icon: "⚠️", label: "Be careful. This looks suspicious.",    scal: "Hmm, something's off here."},
+  looks_safe: {icon: "✅", label: "This looks safe.",                       scal: "This one seems fine to me!"}
+};
+ 
+// Build elements with textContent, never innerHTML: scam messages are untrusted text.
+function el(tag, text, cls) {
+  const e = document.createElement(tag);
+  if (text !== undefined && text !== null) e.textContent = text;
+  if (cls) e.className = cls;
+  return e;
+}
+ 
+async function api(url, body) {
+  const opts = body ? {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)} : {};
+  const r = await fetch(url, opts);
+  return r.json();
+}
+ 
+/* ---------- treats (Scal earns a treat for every scam caught) ---------- */
+function getTreats() { try { return parseInt(localStorage.getItem("scalTreats") || "0", 10); } catch (e) { return 0; } }
+function addTreat() { try { localStorage.setItem("scalTreats", String(getTreats() + 1)); } catch (e) {} renderTreats(); }
+function renderTreats() { const n = getTreats(); $("treats").textContent = "🪰 " + n + (n === 1 ? " treat" : " treats"); }
+ 
+/* ---------- tabs ---------- */
+function show(tab) {
+  $("tab-check").hidden = tab !== "check";
+  $("tab-family").hidden = tab !== "family";
+  $("navCheck").classList.toggle("active", tab === "check");
+  $("navFamily").classList.toggle("active", tab === "family");
+  if (tab === "family") loadFeed();
+}
+$("navCheck").onclick = () => show("check");
+$("navFamily").onclick = () => show("family");
+ 
+/* ---------- examples ---------- */
+Object.keys(EXAMPLES).forEach(name => {
+  const b = el("button", name);
+  b.onclick = () => { $("msg").value = EXAMPLES[name]; };
+  $("examples").append(b);
+});
+ 
+/* ---------- family circle ---------- */
+async function renderCircle() {
+  const me = await api("/api/me");
+  const box = $("circle");
+  box.replaceChildren();
+  if (me.code) {
+    box.append(el("h3", "👨‍👩‍👧 " + me.circle),
+               el("div", "Invite code: " + me.code + "  ·  You are " + me.name, "small"),
+               el("div", "Share the invite code so family can join.", "small"));
+    loadFeed();
+  } else {
+    box.append(el("h3", "Join or start a family circle"));
+    const name = el("input"); name.placeholder = "Your name";
+    const circ = el("input"); circ.placeholder = "New circle name (e.g. The Garcia Family)";
+    const mk = el("button", "Create circle");
+    const code = el("input"); code.placeholder = "Or enter an invite code";
+    const jn = el("button", "Join circle", "alt");
+    mk.onclick = async () => {
+      if (!name.value || !circ.value) return alert("Please enter your name and a circle name");
+      await api("/api/circle/create", {name: name.value, circle: circ.value});
+      renderCircle();
+    };
+    jn.onclick = async () => {
+      if (!name.value || !code.value) return alert("Please enter your name and the invite code");
+      const r = await api("/api/circle/join", {name: name.value, code: code.value});
+      if (!r.ok) return alert(r.error || "Couldn't join");
+      renderCircle();
+    };
+    box.append(name, circ, mk, code, jn);
+  }
+}
+ 
+/* ---------- checking a message ---------- */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return alert("Sorry, this browser can't read aloud.");
+  const s = window.speechSynthesis;
+  if (s.speaking) { s.cancel(); return; }          // tapping again stops it
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.9;                                     // slightly slower for clarity
+  s.speak(u);
+}
+
+function addList(card, title, items) {
+  if (!items || !items.length) return;
+  card.append(el("b", title));
+  const u = el("ul");
+  items.forEach(f => u.append(el("li", f)));
+  card.append(u);
+}
+
+function renderResult(r, final) {
+  const mood = MOOD[r.verdict] || MOOD.suspicious;
+  const c = el("div", null, "card " + r.verdict);
+  const says = el("div", null, "scalsays");
+  const face = el("img"); face.src = "/static/scal-logo.svg"; face.alt = "";
+  says.append(face, el("span", "Scal says: " + mood.scal));
+  const banner = el("div", null, "banner");
+  banner.append(el("span", mood.icon), el("span", mood.label));
+  c.append(says, banner, el("p", r.explanation));
+  addList(c, "Warning signs:", r.red_flags);
+  addList(c, "What to do:", r.next_steps);
+
+  if (!final) {
+    c.append(el("p", "⏳ Quick scan done. Scal is double-checking with AI…", "small"));
+    return c;
+  }
+
+  const readBtn = el("button", "🔊 Read to me", "alt");
+  readBtn.onclick = () => {
+    const parts = [mood.label, r.explanation];
+    if (r.next_steps && r.next_steps.length) parts.push("What to do. " + r.next_steps.join(". "));
+    speak(parts.join(" "));
+  };
+  c.append(readBtn);
+
+  if (r.verdict !== "looks_safe") {
+    addTreat();
+    c.append(el("p", "Want me to let your family know? 🪰 Thanks for the treat!", "small"));
+    const yes = el("button", "Yes, alert my family");
+    const no = el("button", "Not now", "alt");
+    yes.onclick = async () => {
+      const x = await api("/api/alert", last);
+      if (x.error) { alert(x.error); show("family"); return; }
+      yes.textContent = "Family alerted ✓"; yes.disabled = true; no.hidden = true; loadFeed();
+    };
+    no.onclick = () => { yes.hidden = true; no.hidden = true; };
+    c.append(yes, no);
+  }
+  return c;
+}
+
+$("checkBtn").onclick = async () => {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  const text = $("msg").value;
+
+  const quick = await api("/api/quickscan", {text});          // instant: your Python rules only
+  if (quick.error) return $("result").replaceChildren(el("div", quick.error, "card"));
+  $("result").replaceChildren(renderResult(quick, false));
+
+  const full = await api("/api/check", {text});               // slower: rules + Gemini, merged
+  if (full.error) return $("result").replaceChildren(el("div", full.error, "card"));
+  last = {message: text, verdict: full.verdict, explanation: full.explanation};
+  $("result").replaceChildren(renderResult(full, true));
+}; 
+
+/* ---------- family feed ---------- */
+async function loadFeed() {
+  const items = await api("/api/alerts");
+  const f = $("feed");
+  f.replaceChildren();
+  if (!items.length) return f.append(el("div", "No alerts yet. Flag a scam and it will show up here."));
+  items.forEach(a => {
+    const m = MOOD[a.verdict] || MOOD.suspicious;
+    const c = el("div", null, "card " + a.verdict);
+    const banner = el("div", null, "banner");
+    banner.append(el("span", m.icon), el("span", a.sender + " flagged a message"));
+    c.append(banner, el("p", a.message), el("div", a.explanation, "small"));
+    if (a.handled) {
+      c.append(el("div", "✅ Handled" + (a.note ? ": " + a.note : ""), "small"));
+    } else {
+      const n = el("input"); n.placeholder = "Add a note (e.g. 'I called Grandma')";
+      const b = el("button", "Mark handled");
+      b.onclick = async () => { await api("/api/alerts/" + a.id + "/handle", {note: n.value}); loadFeed(); };
+      c.append(n, b);
+    }
+    f.append(c);
+  });
+}
+ 
+renderTreats();
+renderCircle();
+setInterval(() => { if (!$("tab-family").hidden) loadFeed(); }, 8000);
+</script>
+</body>
+</html>
